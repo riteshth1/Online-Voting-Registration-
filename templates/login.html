@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voter Login (OTP Verification)</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 30px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #003366;
+      margin-bottom: 25px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      padding: 10px;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      font-size: 15px;
+      margin-bottom: 15px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: #003366;
+      box-shadow: 0 0 4px rgba(0, 51, 102, 0.2);
+    }
+
+    button {
+      background-color: #003366;
+      color: #ffffff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #00284d;
+    }
+
+    p {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    a {
+      color: #003366;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .otp-section {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Voter Login</h2>
+
+    <!-- Step 1: Get OTP -->
+    <form id="otp-form" method="POST" action="/get_otp">
+      <label for="voter_id">Voter ID:</label>
+      <input type="text" id="voter_id" name="voter_id" placeholder="Enter Voter ID" required>
+      <button type="submit">Get OTP</button>
+    </form>
+
+    <!-- Step 2: Verify OTP -->
+    <form id="verify-form" class="otp-section" method="POST" action="/verify_otp">
+      <label for="otp">Enter OTP:</label>
+      <input type="number" id="otp" name="otp" placeholder="Enter OTP" required>
+      <button type="submit">Verify & Login</button>
+    </form>
+
+    <p>New user? <a href="/register">Register</a></p>
+  </div>
+
+  <script>
+    // If OTP is requested, show OTP input section
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("otp_sent") === "true") {
+      document.getElementById("otp-form").style.display = "none";
+      document.querySelector(".otp-section").style.display = "block";
+    }
+  </script>
+</body>
+</html>

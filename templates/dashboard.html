@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #222;
+    }
+
+    .dashboard-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 30px 40px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #003366;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
+      word-break: break-word;
+    }
+
+    p {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 16px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      min-width: 560px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #e8eef5;
+      color: #003366;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #eef3f8;
+    }
+
+    .btn {
+      background-color: #003366;
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .btn:hover:not(:disabled) {
+      background-color: #00284d;
+    }
+
+    .btn:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+    }
+
+    .logout {
+      display: inline-block;
+      margin-top: 20px;
+      text-align: center;
+      width: 100%;
+      font-size: 15px;
+    }
+
+    .flash-messages {
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .flash {
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: inline-block;
+      width: 100%;
+      max-width: 720px;
+      box-sizing: border-box;
+    }
+
+    .flash.success { background-color: #d4edda; color: #155724; }
+    .flash.info { background-color: #cce5ff; color: #004085; }
+    .flash.warning { background-color: #fff3cd; color: #856404; }
+    .flash.danger { background-color: #f8d7da; color: #721c24; }
+
+    @media (max-width: 600px) {
+      .dashboard-container { padding: 18px; margin: 18px; }
+      h2 { font-size: 20px; }
+      p { font-size: 15px; }
+      .btn { width: 100%; box-sizing: border-box; }
+      th, td { font-size: 14px; padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container" role="main" aria-labelledby="welcome">
+    <h2 id="welcome">Welcome, {{ user.name }}</h2>
+
+    <div class="flash-messages" aria-live="polite">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category|e }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    {% if user.has_voted %}
+      <p>You have already voted. Thank you for your participation!</p>
+    {% else %}
+      <p>Cast your vote below:</p>
+
+      <div class="table-wrapper">
+        <table aria-describedby="vote-instructions">
+          <caption id="vote-instructions" style="caption-side:bottom; text-align:left; padding-top:8px; font-size:13px;">Select a candidate and click Vote. You can only vote once.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Party</th>
+              <th scope="col">Position</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cand in candidates %}
+            <tr>
+              <td>{{ cand.name }}</td>
+              <td>{{ cand.party }}</td>
+              <td>{{ cand.position }}</td>
+              <td>
+                <form action="{{ url_for('admin.vote', cand_id=cand.id) }}" method="post" style="margin:0;">
+                  {% if csrf_token %}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  {% endif %}
+                  <button class="btn" type="submit" title="Vote for {{ cand.name }}" aria-label="Vote for {{ cand.name }}">Vote</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+    <div class="logout">
+      <a class="btn" href="{{ url_for('admin.logout') }}">Logout</a>
+    </div>
+  </div>
+</body>
+</html>

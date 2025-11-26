@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #222;
+    }
+
+    .dashboard-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 30px 40px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #003366;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    p {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 16px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto; /* Enables horizontal scroll on small screens */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      min-width: 600px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    th {
+      background-color: #e8eef5;
+      color: #003366;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #eef3f8;
+    }
+
+    button {
+      background-color: #003366;
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #00284d;
+    }
+
+    a {
+      color: #003366;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .logout {
+      display: inline-block;
+      margin-top: 20px;
+      text-align: center;
+      width: 100%;
+      font-size: 15px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .dashboard-container {
+        padding: 20px;
+        margin: 20px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      p {
+        font-size: 15px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-container">
+    <h2>Welcome, {{ user.name }}</h2>
+    <p>Cast your vote below:</p>
+
+    <div class="table-wrapper">
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Party</th>
+          <th>Position</th>
+          <th>Action</th>
+        </tr>
+
+        {% for cand in candidates %}
+        <tr>
+          <td>{{ cand.name }}</td>
+          <td>{{ cand.party }}</td>
+          <td>{{ cand.position }}</td>
+          <td>
+            <form action="/vote/{{ cand.id }}" method="POST">
+              <button type="submit">Vote</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div class="logout">
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+
+</body>
+</html>
