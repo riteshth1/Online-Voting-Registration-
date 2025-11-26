@@ -1,6 +1,5 @@
 from app import app
 from authentication import auth_bp
-from voting_routes import voting_bp
 
 # Register blueprints
 app.register_blueprint(auth_bp)
